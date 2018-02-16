@@ -1,12 +1,14 @@
 ---
 title: "Change in Number of Deaths From AIDS"
-output: html_notebook
-editor_options: 
+output:
+  html_document:
+    df_print: paged
+editor_options:
   chunk_output_type: console
 ---
 
 
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -16,7 +18,8 @@ library(reshape2)
 options(scipen=999)
 ```
 
-```{r}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 # Read data into a dataframe
 master <- read.csv('Indicator_Annual number of AIDS deaths.csv', 
                    check.names = F)
@@ -24,14 +27,16 @@ master <- read.csv('Indicator_Annual number of AIDS deaths.csv',
 
 #The Basics: Univariate Analyses
 
-```{r}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 #Create a Tidy dataset to work from
 tidymaster <- gather(master, "year", "n", '1990':'2011', na.rm=TRUE)
 
 ```
 
 
-```{r}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 summary(tidymaster)
 summary(master)
 ```
@@ -42,7 +47,8 @@ The majority of countries have low death numbers relative to each other;
 the median is always very far below the mean. For this project, I'm generally
 more interested in countries with numbers above the mean.
 
-```{r}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 # creates a dataframe of all countries with at least one year above the mean
 above_mean <- subset(master, master$`1990` > 2150 | master$`1991` > 2687 |
   master$`1992` > 3300 | master$`1993` > 4064 | master$`1994` > 4876 | 
@@ -58,44 +64,66 @@ tidy.above_mean <- gather(above_mean, "year", "n", '1990':'2011', na.rm=TRUE)
 
 ``` 
 
-```{r}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 summary(above_mean)
 ```
 
-A summary of all the above-mean countries.
+This is a summary the dataset when it's made up only of countries that have at 
+least one year where they were above the mean. In other words, excluding 
+countries that are consistently below the mean.
 
 # Examining More Than One Variable
 
 
-```{r}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height = 10, fig.width = 10}
 ggplot(aes(x=n), data=tidymaster) +
   geom_histogram() +
-  facet_wrap(~ Country)
+  facet_wrap(~ Country) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
 ```
 
-Wrapping the data by Country shows that there is at least some kind of change 
+Faceting the data by country shows that there is at least some kind of change 
 over time in many countries, even those that stay well below the median.
 
-```{r}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(aes(x=n), data=tidymaster) +
   geom_histogram(bins=50) +
   facet_wrap(~ year)
 ```
 
+These graphs are the count of yearly death totals broken out by year for the 
+entire dataset, not just those countries above the mean.
 
+Notable elements include: starting in about 1999, more countries have higher 
+death rates.
 
-```{r}
+2010 and 2011 have significantly fewer records than in previous years.  
+
+Although the introduction of AZT in the 90's began the dramatic decrease of
+ rate of deaths from AIDS, the highest single-year rates are found in the
+  late 2000's. This could be due to better reporting/communication, or an 
+  indication of global inequalities in access to medicine.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(aes(x=n), data=tidy.above_mean) +
   geom_histogram(bins=50) +
   facet_wrap(~ year)
 
 ```
 
+The same graph as above, but using the dataset of countries with at least one
+year above the mean.
+
 Although most countries are still reporting deaths on the lower end of the scale,
  a little more variation is visible, particularly after the late 90's, as 
  compared to the dataset of all countries.
 
-```{r}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(aes(x=n), data=tidy.above_mean) +
   geom_histogram(bins=100)
 
@@ -111,31 +139,24 @@ ggplot(aes(x=n), data=tidy.above_mean) +
 Histograms for number of cases in all countries that have at least one year
 above the mean for that year.
 
-```{r}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(aes(x=year, y=n), data=tidy.above_mean) +
   geom_point() +
   facet_wrap(~Country)
 ```
 
 Despite the introduction of AZT in the early 90's, many countries saw increases
-in reported deaths throughout the 90's.
+in reported deaths throughout the 90's. 
 
-# Which Above-Mean Countries Decreased Deaths From AIDS?
-
-I will be examining all of the countries in the above_mean dataset -- so for at 
-least one year between 1990 and 2011, they reported a higher-than-mean number of
-deaths from AIDS.
-
-First I want to record the years that the number of deaths decreased for every
-country.
+# Trends over two decades
 
 ```{r}
-above_mean$'91' <- above_mean$`1990` - above_mean$`1991`
+write.csv(above_mean, 'above_mean.csv')
 ```
 
-# Compare differences ten years apart
 
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 master2 <- subset(master, select = c('Country', '1990', '2000'))
 master2 <- na.omit(master2)
 
@@ -150,7 +171,8 @@ ggplot(data=master2, aes(x=Country, y=master2$`1990`)) +
 This graph shows the number of deaths from AIDS in 1990, for
 countries with deaths above the mean in 1990.
 
-```{r}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 master2long <- melt(master2, id.var = "Country")
 
@@ -162,7 +184,8 @@ ggplot(master2long, aes(x = Country, y = value, fill = variable)) +
 Comparing 1990 to 2000, again with only the set of countries above the mean in
 1990
 
-```{r}
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 master3 <- subset(master, select = c('Country', '1990', '2000', '2010'))
 master3 <- na.omit(master3)
