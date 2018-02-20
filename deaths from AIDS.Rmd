@@ -13,6 +13,8 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(reshape2)
+install.packages("wesanderson")
+library(wesanderson)
 
 
 options(scipen=999)
@@ -151,7 +153,7 @@ in reported deaths throughout the 90's.
 
 # Trends over two decades
 
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 write.csv(above_mean, 'above_mean.csv')
 ```
 
@@ -204,4 +206,94 @@ above the mean number of deaths in 1990.
 
 Out of 12 countries surveyed, 10 saw an increase from 1990 to 2000, while only 3
  saw an increase between 2000 and 2010.
+
+
+# Year on Year Changes
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+above_mean_diff <- above_mean
+
+above_mean_diff['1991'] = above_mean['1991'] - above_mean['1990']
+above_mean_diff['1992'] = above_mean['1992'] - above_mean['1991']
+above_mean_diff['1993'] = above_mean['1993'] - above_mean['1992']
+above_mean_diff['1994'] = above_mean['1994'] - above_mean['1993']
+above_mean_diff['1995'] = above_mean['1995'] - above_mean['1994']
+above_mean_diff['1996'] = above_mean['1996'] - above_mean['1995']
+above_mean_diff['1997'] = above_mean['1997'] - above_mean['1996']
+above_mean_diff['1998'] = above_mean['1998'] - above_mean['1997']
+above_mean_diff['1999'] = above_mean['1999'] - above_mean['1998']
+above_mean_diff['2000'] = above_mean['2000'] - above_mean['1999']
+above_mean_diff['2001'] = above_mean['2001'] - above_mean['2000']
+above_mean_diff['2002'] = above_mean['2002'] - above_mean['2001']
+above_mean_diff['2003'] = above_mean['2003'] - above_mean['2002']
+above_mean_diff['2004'] = above_mean['2004'] - above_mean['2003']
+above_mean_diff['2005'] = above_mean['2005'] - above_mean['2004']
+above_mean_diff['2006'] = above_mean['2006'] - above_mean['2005']
+above_mean_diff['2007'] = above_mean['2007'] - above_mean['2006']
+above_mean_diff['2008'] = above_mean['2008'] - above_mean['2007']
+above_mean_diff['2009'] = above_mean['2009'] - above_mean['2008']
+above_mean_diff['2010'] = above_mean['2010'] - above_mean['2019']
+above_mean_diff['2011'] = above_mean['2011'] - above_mean['2010']
+
+above_mean_diff = subset(above_mean_diff, select = -c(2) )
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+tidy.diff <- gather(above_mean_diff, "year", "n", '1991':'2011', na.rm=TRUE)
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(subset(tidy.diff, tidy.diff$Country=='Botswana'), aes(year, n)) +
+  geom_col(aes(fill = n < 0), stat = "identity") +
+  scale_fill_manual(guide = FALSE, breaks = c(TRUE, FALSE), 
+  values=wes_palette(n=2, name="Zissou"))
+```
+
+Change in number of deaths in an above-mean country chosen at random (Botswana).
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(subset(tidy.diff, tidy.diff$Country=='Colombia'), aes(year, n)) +
+  geom_col(aes(fill = n < 0), stat = "identity") +
+  scale_fill_manual(guide = FALSE, breaks = c(TRUE, FALSE), 
+  values=wes_palette(n=2, name="Zissou"))
+```
+
+Changes in Colombia.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(subset(tidy.diff, tidy.diff$Country=='United States'), aes(year, n)) +
+  geom_col(aes(fill = n < 0), stat = "identity") +
+  scale_fill_manual(guide = FALSE, breaks = c(TRUE, FALSE), 
+  values=wes_palette(n=2, name="Zissou"))
+```
+
+United States
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(subset(tidy.diff, tidy.diff$Country=='Uganda'), aes(year, n)) +
+  geom_col(aes(fill = n < 0), stat = "identity") +
+  scale_fill_manual(guide = FALSE, breaks = c(TRUE, FALSE), 
+  values=wes_palette(n=2, name="Zissou"))
+```
+
+Uganda
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(subset(tidy.diff), aes(year, n)) +
+  geom_col(aes(fill = n < 0), stat = "identity") +
+  facet_wrap(~Country)
+  scale_fill_manual(guide = FALSE, breaks = c(TRUE, FALSE), 
+  values=wes_palette(n=2, name="Zissou"))
+```
+
+Showing changes in all above-mean countries. Note that most countries see a 
+sudden sharp rise in 2010, perhaps indicating a new data collection methodology.
+ (A new strain, or sudden change in medicine availability could theoretically 
+ explain the change, but overall it seems too high, sudden, and doesn't fit in 
+ with the data around it.)
+
+
+
+
 
