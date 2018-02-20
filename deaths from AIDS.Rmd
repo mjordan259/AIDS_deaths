@@ -13,7 +13,6 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(reshape2)
-install.packages("wesanderson")
 library(wesanderson)
 
 
@@ -232,7 +231,7 @@ above_mean_diff['2006'] = above_mean['2006'] - above_mean['2005']
 above_mean_diff['2007'] = above_mean['2007'] - above_mean['2006']
 above_mean_diff['2008'] = above_mean['2008'] - above_mean['2007']
 above_mean_diff['2009'] = above_mean['2009'] - above_mean['2008']
-above_mean_diff['2010'] = above_mean['2010'] - above_mean['2019']
+above_mean_diff['2010'] = above_mean['2010'] - above_mean['2009']
 above_mean_diff['2011'] = above_mean['2011'] - above_mean['2010']
 
 above_mean_diff = subset(above_mean_diff, select = -c(2) )
@@ -279,15 +278,16 @@ ggplot(subset(tidy.diff, tidy.diff$Country=='Uganda'), aes(year, n)) +
 
 Uganda
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height = 10, fig.width = 12}
 ggplot(subset(tidy.diff), aes(year, n)) +
   geom_col(aes(fill = n < 0), stat = "identity") +
-  facet_wrap(~Country)
+  facet_wrap(~Country) +
   scale_fill_manual(guide = FALSE, breaks = c(TRUE, FALSE), 
-  values=wes_palette(n=2, name="Zissou"))
+  values=wes_palette(n=2, name="Zissou")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
-Showing changes in all above-mean countries. Note that most countries see a 
+Showing changes in all above-mean countries. Note that some countries see a 
 sudden sharp rise in 2010, perhaps indicating a new data collection methodology.
  (A new strain, or sudden change in medicine availability could theoretically 
  explain the change, but overall it seems too high, sudden, and doesn't fit in 
