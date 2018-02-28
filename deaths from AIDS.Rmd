@@ -147,7 +147,7 @@ ggplot(aes(x=year, y=n), data=tidy.above_mean) +
   facet_wrap(~Country)
 ```
 
-Despite the introduction of AZT in the early 90's, many countries saw increases
+Despite the introduction of AZT in the 90's, many countries saw increases
 in reported deaths throughout the 90's. 
 
 # Trends over two decades
@@ -270,13 +270,13 @@ ggplot(subset(tidy.diff, tidy.diff$Country=='United States'), aes(year, n)) +
 United States
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(subset(tidy.diff, tidy.diff$Country=='Uganda'), aes(year, n)) +
+ggplot(subset(tidy.diff, tidy.diff$Country=='Germany'), aes(year, n)) +
   geom_col(aes(fill = n < 0), stat = "identity") +
   scale_fill_manual(guide = FALSE, breaks = c(TRUE, FALSE), 
   values=wes_palette(n=2, name="Zissou"))
 ```
 
-Uganda
+Germany
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height = 10, fig.width = 12}
 ggplot(subset(tidy.diff), aes(year, n)) +
@@ -292,6 +292,30 @@ sudden sharp rise in 2010, perhaps indicating a new data collection methodology.
  (A new strain, or sudden change in medicine availability could theoretically 
  explain the change, but overall it seems too high, sudden, and doesn't fit in 
  with the data around it.)
+
+This WHO publication notes the increase in deaths in specific regions of the 
+world in the 2000's, though doesn't account for a sudden leap in 2010. It does,
+ though, note the loss of funding following the global financial crisis in 2008.
+  This could easily have led to loss of treatment options, especially in the 
+  poorest parts of the world.
+  
+# Breakdown by Global Regions
+
+Coming soon!
+
+# Final Analysis
+
+The first published report identifying HIV/AIDS was published in June 1981. The 
+AIDS epidemic ripped through the globe in the next decade, government mismanagement
+ and fear limiting education and research until the 1990's and the advent of
+ AZT and similar drugs. This data from WHO illustrates the story of the treatment
+  of HIV and AIDS over two decades, from becoming a death sentence to a disease
+   that is treatable and (less) stigmatized.
+   
+   
+   
+Author's Note: This project is dedicated to those lost in the epidemic. May their
+ memory be as a blessing.
 
 
 
