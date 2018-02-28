@@ -78,11 +78,12 @@ countries that are consistently below the mean.
 
 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height = 10, fig.width = 10}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height = 10.5, fig.width = 10}
 ggplot(aes(x=n), data=tidymaster) +
-  geom_histogram() +
+  geom_histogram(fill=wes_palette(n=1, name="Zissou")) +
   facet_wrap(~ Country) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  
 
 ```
 
@@ -92,7 +93,7 @@ over time in many countries, even those that stay well below the median.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(aes(x=n), data=tidymaster) +
-  geom_histogram(bins=50) +
+  geom_histogram(fill=wes_palette(n=1, name="Zissou"), bins=50) +
   facet_wrap(~ year)
 ```
 
@@ -111,7 +112,7 @@ Although the introduction of AZT in the 90's began the dramatic decrease of
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(aes(x=n), data=tidy.above_mean) +
-  geom_histogram(bins=50) +
+  geom_histogram(fill=wes_palette(n=1, name="Zissou"), bins=50) +
   facet_wrap(~ year)
 
 ```
@@ -126,29 +127,37 @@ Although most countries are still reporting deaths on the lower end of the scale
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(aes(x=n), data=tidy.above_mean) +
-  geom_histogram(bins=100)
+  geom_histogram(fill=wes_palette(n=1, name="Zissou"),bins=100)
 
 ggplot(aes(x=n), data=tidy.above_mean) +
-  geom_histogram(bins=100) +
-  facet_wrap(~year)
+  geom_histogram(fill=wes_palette(n=1, name="Zissou"),bins=100) +
+  facet_wrap(~year) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
 
 ggplot(aes(x=n), data=tidy.above_mean) +
-  geom_histogram(bins=100) +
-  facet_wrap(~Country)
+  geom_histogram(fill=wes_palette(n=1, name="Zissou"),bins=100) +
+  facet_wrap(~Country) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
 ```
 
 Histograms for number of cases in all countries that have at least one year
 above the mean for that year.
 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-ggplot(aes(x=year, y=n), data=tidy.above_mean) +
-  geom_point() +
-  facet_wrap(~Country)
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height = 10, fig.width = 12}
+
+ggplot(data=tidy.above_mean, aes(x=year, y=n, group=1)) +
+    geom_line(colour=wes_palette(n=1, name="Zissou")) +
+  facet_wrap(~Country) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
 ```
 
 Despite the introduction of AZT in the 90's, many countries saw increases
-in reported deaths throughout the 90's. 
+in reported deaths throughout that decade, likely reflecting differences in
+ medical access.
 
 # Trends over two decades
 
@@ -166,7 +175,7 @@ summary(master2)
 master2<-subset(master2, master2$`1990` > 2150)
 
 ggplot(data=master2, aes(x=Country, y=master2$`1990`)) + 
-  geom_bar(stat='identity')
+  geom_bar(stat='identity', fill=wes_palette(n=1, name="Zissou"))
 ```
 
 This graph shows the number of deaths from AIDS in 1990, for
@@ -178,7 +187,11 @@ countries with deaths above the mean in 1990.
 master2long <- melt(master2, id.var = "Country")
 
 ggplot(master2long, aes(x = Country, y = value, fill = variable)) + 
-  geom_bar(stat = "identity", position = "dodge") 
+  geom_bar(stat = "identity", position = "dodge") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_manual(values=wes_palette(n=2, name="Zissou"))
+
+
 
 ```
 
@@ -196,7 +209,9 @@ master3<-subset(master3, master3$`1990` > 2150)
 master3long <- melt(master3, id.var = "Country")
 
 ggplot(master3long, aes(x = Country, y = value, fill = variable)) + 
-  geom_bar(stat = "identity", position = "dodge") 
+  geom_bar(stat = "identity", position = "dodge") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_manual(values=wes_palette(n=3, name="Zissou"))
 
 ```
 
@@ -245,8 +260,7 @@ tidy.diff <- gather(above_mean_diff, "year", "n", '1991':'2011', na.rm=TRUE)
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(subset(tidy.diff, tidy.diff$Country=='Botswana'), aes(year, n)) +
   geom_col(aes(fill = n < 0), stat = "identity") +
-  scale_fill_manual(guide = FALSE, breaks = c(TRUE, FALSE), 
-  values=wes_palette(n=2, name="Zissou"))
+  scale_fill_manual(guide = FALSE, breaks = c(TRUE, FALSE), values=wes_palette(n=2, name="Zissou"))
 ```
 
 Change in number of deaths in an above-mean country chosen at random (Botswana).
