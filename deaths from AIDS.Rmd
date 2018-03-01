@@ -42,7 +42,7 @@ summary(tidymaster)
 summary(master)
 ```
 
-Summaries of tidied and untidied data. 
+Summaries of tidied (top) and untidied (bottom) data. 
 
 The majority of countries have low death numbers relative to each other; 
 the median is always very far below the mean. For this project, I'm generally
@@ -74,7 +74,7 @@ This is a summary the dataset when it's made up only of countries that have at
 least one year where they were above the mean. In other words, excluding 
 countries that are consistently below the mean.
 
-# Examining More Than One Variable
+# Countries with high death totals
 
 
 
@@ -82,7 +82,8 @@ countries that are consistently below the mean.
 ggplot(aes(x=n), data=tidymaster) +
   geom_histogram(fill=wes_palette(n=1, name="Zissou")) +
   facet_wrap(~ Country) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x="Number of Deaths")
   
 
 ```
@@ -91,10 +92,11 @@ Faceting the data by country shows that there is at least some kind of change
 over time in many countries, even those that stay well below the median.
 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height = 10.5, fig.width = 10}
 ggplot(aes(x=n), data=tidymaster) +
   geom_histogram(fill=wes_palette(n=1, name="Zissou"), bins=50) +
-  facet_wrap(~ year)
+  facet_wrap(~ year) +
+  labs(x="Number of Deaths")
 ```
 
 These graphs are the count of yearly death totals broken out by year for the 
@@ -110,10 +112,11 @@ Although the introduction of AZT in the 90's began the dramatic decrease of
   late 2000's. This could be due to better reporting/communication, or an 
   indication of global inequalities in access to medicine.
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height = 8, fig.width = 10}
 ggplot(aes(x=n), data=tidy.above_mean) +
   geom_histogram(fill=wes_palette(n=1, name="Zissou"), bins=50) +
-  facet_wrap(~ year)
+  facet_wrap(~ year)+
+  labs(x="Number of Deaths")
 
 ```
 
@@ -127,31 +130,42 @@ Although most countries are still reporting deaths on the lower end of the scale
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(aes(x=n), data=tidy.above_mean) +
-  geom_histogram(fill=wes_palette(n=1, name="Zissou"),bins=100)
-
-ggplot(aes(x=n), data=tidy.above_mean) +
-  geom_histogram(fill=wes_palette(n=1, name="Zissou"),bins=100) +
-  facet_wrap(~year) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
-
-ggplot(aes(x=n), data=tidy.above_mean) +
-  geom_histogram(fill=wes_palette(n=1, name="Zissou"),bins=100) +
-  facet_wrap(~Country) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  geom_histogram(fill=wes_palette(n=1, name="Zissou"),bins=100)+
+  labs(x="Number of Deaths")
 
 ```
 
 Histograms for number of cases in all countries that have at least one year
-above the mean for that year.
+above the mean number of deaths.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x=n), data=tidy.above_mean) +
+  geom_histogram(fill=wes_palette(n=1, name="Zissou"),bins=100) +
+  facet_wrap(~year) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  labs(x="Number of Deaths")
+```
+
+As above, broken out by year.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x=n), data=tidy.above_mean) +
+  geom_histogram(fill=wes_palette(n=1, name="Zissou"),bins=100) +
+  facet_wrap(~Country) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  labs(x="Number of Deaths")
+```
+
+And broken out by country.
 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height = 10, fig.width = 12}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height = 10, fig.width = 10}
 
 ggplot(data=tidy.above_mean, aes(x=year, y=n, group=1)) +
     geom_line(colour=wes_palette(n=1, name="Zissou")) +
-  facet_wrap(~Country) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  facet_wrap(~Country, ncol= 4) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x="Number of Deaths")
 
 ```
 
@@ -175,7 +189,9 @@ summary(master2)
 master2<-subset(master2, master2$`1990` > 2150)
 
 ggplot(data=master2, aes(x=Country, y=master2$`1990`)) + 
-  geom_bar(stat='identity', fill=wes_palette(n=1, name="Zissou"))
+  geom_bar(stat='identity', fill=wes_palette(n=1, name="Zissou"))+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x="Country", y="Number of Deaths in 1990")
 ```
 
 This graph shows the number of deaths from AIDS in 1990, for
@@ -189,8 +205,8 @@ master2long <- melt(master2, id.var = "Country")
 ggplot(master2long, aes(x = Country, y = value, fill = variable)) + 
   geom_bar(stat = "identity", position = "dodge") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_manual(values=wes_palette(n=2, name="Zissou"))
-
+  scale_fill_manual(values=wes_palette(n=2, name="Zissou"), name = "Year")+
+  labs(x="Country", y="Number of Deaths") 
 
 
 ```
@@ -211,7 +227,9 @@ master3long <- melt(master3, id.var = "Country")
 ggplot(master3long, aes(x = Country, y = value, fill = variable)) + 
   geom_bar(stat = "identity", position = "dodge") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_manual(values=wes_palette(n=3, name="Zissou"))
+  scale_fill_manual(values=wes_palette(n=3, name="Zissou"), name='Year') +
+  labs(x="Country", y="Number of Deaths") 
+
 
 ```
 
@@ -260,7 +278,8 @@ tidy.diff <- gather(above_mean_diff, "year", "n", '1991':'2011', na.rm=TRUE)
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 ggplot(subset(tidy.diff, tidy.diff$Country=='Botswana'), aes(year, n)) +
   geom_col(aes(fill = n < 0), stat = "identity") +
-  scale_fill_manual(guide = FALSE, breaks = c(TRUE, FALSE), values=wes_palette(n=2, name="Zissou"))
+  scale_fill_manual(guide = FALSE, breaks = c(TRUE, FALSE), values=wes_palette(n=2, name="Zissou")) +
+  labs(x="Year", y="Number of Deaths") 
 ```
 
 Change in number of deaths in an above-mean country chosen at random (Botswana).
@@ -269,7 +288,8 @@ Change in number of deaths in an above-mean country chosen at random (Botswana).
 ggplot(subset(tidy.diff, tidy.diff$Country=='Colombia'), aes(year, n)) +
   geom_col(aes(fill = n < 0), stat = "identity") +
   scale_fill_manual(guide = FALSE, breaks = c(TRUE, FALSE), 
-  values=wes_palette(n=2, name="Zissou"))
+  values=wes_palette(n=2, name="Zissou")) +
+  labs(x="Year", y="Number of Deaths") 
 ```
 
 Changes in Colombia.
@@ -278,7 +298,8 @@ Changes in Colombia.
 ggplot(subset(tidy.diff, tidy.diff$Country=='United States'), aes(year, n)) +
   geom_col(aes(fill = n < 0), stat = "identity") +
   scale_fill_manual(guide = FALSE, breaks = c(TRUE, FALSE), 
-  values=wes_palette(n=2, name="Zissou"))
+  values=wes_palette(n=2, name="Zissou")) +
+  labs(x="Year", y="Number of Deaths") 
 ```
 
 United States
@@ -287,18 +308,22 @@ United States
 ggplot(subset(tidy.diff, tidy.diff$Country=='Germany'), aes(year, n)) +
   geom_col(aes(fill = n < 0), stat = "identity") +
   scale_fill_manual(guide = FALSE, breaks = c(TRUE, FALSE), 
-  values=wes_palette(n=2, name="Zissou"))
+  values=wes_palette(n=2, name="Zissou")) +
+  labs(x="Year", y="Number of Deaths") 
 ```
 
 Germany
 
+
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height = 10, fig.width = 12}
 ggplot(subset(tidy.diff), aes(year, n)) +
   geom_col(aes(fill = n < 0), stat = "identity") +
-  facet_wrap(~Country) +
+  facet_wrap(~Country,ncol=4) +
   scale_fill_manual(guide = FALSE, breaks = c(TRUE, FALSE), 
   values=wes_palette(n=2, name="Zissou")) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  labs(x="Year", y="Number of Deaths") 
 ```
 
 Showing changes in all above-mean countries. Note that some countries see a 
@@ -313,9 +338,6 @@ world in the 2000's, though doesn't account for a sudden leap in 2010. It does,
   This could easily have led to loss of treatment options, especially in the 
   poorest parts of the world.
   
-# Breakdown by Global Regions
-
-Coming soon!
 
 # Final Analysis
 
@@ -326,10 +348,6 @@ AIDS epidemic ripped through the globe in the next decade, government mismanagem
   of HIV and AIDS over two decades, from becoming a death sentence to a disease
    that is treatable and (less) stigmatized.
    
-   
-   
-Author's Note: This project is dedicated to those lost in the epidemic. May their
- memory be as a blessing.
 
 
 
